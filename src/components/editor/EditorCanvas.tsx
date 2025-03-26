@@ -231,6 +231,16 @@ export function EditorCanvas() {
     
     const directions = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'];
     const cursors = ['ns-resize', 'nesw-resize', 'ew-resize', 'nwse-resize', 'ns-resize', 'nesw-resize', 'ew-resize', 'nwse-resize'];
+    const ariaLabels = [
+      'Redimensionner vers le haut', 
+      'Redimensionner vers le haut et la droite', 
+      'Redimensionner vers la droite', 
+      'Redimensionner vers le bas et la droite',
+      'Redimensionner vers le bas', 
+      'Redimensionner vers le bas et la gauche', 
+      'Redimensionner vers la gauche', 
+      'Redimensionner vers le haut et la gauche'
+    ];
     
     return directions.map((dir, index) => {
       let style: React.CSSProperties = {
@@ -275,6 +285,9 @@ export function EditorCanvas() {
           style={style}
           onMouseDown={(e) => handleResizeStart(dir, e)}
           className="resize-handle"
+          aria-label={ariaLabels[index]}
+          role="button"
+          tabIndex={0}
         />
       );
     });
@@ -291,6 +304,7 @@ export function EditorCanvas() {
             key={`v-${index}`}
             className="absolute top-0 bottom-0 w-px bg-primary"
             style={{ left: `${position}px` }}
+            aria-hidden="true"
           />
         ))}
         {alignmentGuides.horizontal.map((position, index) => (
@@ -298,6 +312,7 @@ export function EditorCanvas() {
             key={`h-${index}`}
             className="absolute left-0 right-0 h-px bg-primary"
             style={{ top: `${position}px` }}
+            aria-hidden="true"
           />
         ))}
       </>
@@ -309,7 +324,7 @@ export function EditorCanvas() {
     if (!showGrid) return null;
     
     return (
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="w-full h-full grid grid-cols-12 gap-4">
           {Array.from({ length: 12 }).map((_, index) => (
             <div key={index} className="h-full border-r border-dashed border-primary/20" />
@@ -340,6 +355,8 @@ export function EditorCanvas() {
           size="icon"
           onClick={() => setShowGrid(!showGrid)}
           title={showGrid ? "Masquer la grille" : "Afficher la grille"}
+          aria-label={showGrid ? "Masquer la grille" : "Afficher la grille"}
+          aria-pressed={showGrid}
         >
           <Grid3X3 className="h-4 w-4" />
         </Button>
@@ -349,6 +366,8 @@ export function EditorCanvas() {
         ref={canvasRef}
         className="w-full h-full bg-white overflow-auto relative"
         onClick={handleCanvasClick}
+        role="region"
+        aria-label="Canevas d'édition"
       >
         {renderGrid()}
         {renderAlignmentGuides()}
@@ -370,6 +389,10 @@ export function EditorCanvas() {
               }}
               onClick={(e) => handleElementClick(element.id, e)}
               onMouseDown={(e) => handleDragStart(element.id, e)}
+              role="button"
+              tabIndex={0}
+              aria-label={`Élément ${element.type}`}
+              aria-selected={selectedElementId === element.id}
             >
               {renderElement(element)}
               {renderResizeHandles(element)}

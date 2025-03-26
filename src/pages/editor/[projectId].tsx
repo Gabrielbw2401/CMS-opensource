@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
-import { ArrowLeft, Eye, Undo, Redo, Save, Clock, Menu, X } from "lucide-react";
+import { ArrowLeft, Eye, Undo, Redo, Save, Clock, Menu, X, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Tooltip,
@@ -79,7 +79,7 @@ const Editor = () => {
       }
       
       // Ctrl+Y ou Cmd+Shift+Z pour rétablir
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && eift))) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
         e.preventDefault();
         redo();
       }
