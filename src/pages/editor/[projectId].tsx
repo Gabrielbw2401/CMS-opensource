@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
-import { ArrowLeft, Eye, Undo, Redo, Save, Clock } from "lucide-react";
+import { ArrowLeft, Eye, Undo, Redo, Save, Clock, Menu, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Tooltip,
@@ -25,11 +25,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Editor = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   
   const { isAuthenticated } = useAuthStore();
   const { projects, currentProject, setCurrentProject } = useProjectStore();
@@ -44,6 +46,8 @@ const Editor = () => {
   } = useEditorStore();
   
   const [showHistoryDropdown, setShowHistoryDropdown] = useState(false);
+  const [showLeftSidebar, setShowLeftSidebar] = useState(!isMobile);
+  const [showRightSidebar, setShowRightSidebar] = useState(!isMobile);
   
   // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
   useEffect(() => {
@@ -75,7 +79,7 @@ const Editor = () => {
       }
       
       // Ctrl+Y ou Cmd+Shift+Z pour rétablir
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && eift))) {
         e.preventDefault();
         redo();
       }
@@ -102,6 +106,12 @@ const Editor = () => {
       stopAutoSave();
     };
   }, [startAutoSave, stopAutoSave]);
+  
+  // Gérer l'affichage des sidebars en fonction de la taille de l'écran
+  useEffect(() => {
+    setShowLeftSidebar(!isMobile);
+    setShowRightSidebar(!isMobile);
+  }, [isMobile]);
   
   const handleSave = () => {
     saveState();
@@ -146,15 +156,27 @@ const Editor = () => {
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <h1 className="font-medium">{currentProject.nom}</h1>
+          <h1 className="font-medium truncate max-w-[150px] sm:max-w-none">{currentProject.nom}</h1>
           
-          <div className="ml-4 text-xs text-muted-foreground flex items-center">
+          <div className="ml-2 text-xs text-muted-foreground hidden sm:flex items-center">
             <Clock className="h-3 w-3 mr-1" />
             <span>Dernière sauvegarde: {formatTimeSince(lastSaved)}</span>
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
+          {/* Bouton pour afficher/masquer la sidebar gauche sur mobile */}
+          {isMobile && (
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setShowLeftSidebar(!showLeftSidebar)}
+              className="sm:hidden"
+            >
+              {showLeftSidebar ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </Button>
+          )}
+          
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -163,6 +185,7 @@ const Editor = () => {
                   size="icon" 
                   onClick={undo} 
                   disabled={history.past.length === 0}
+                  className="hidden sm:flex"
                 >
                   <Undo className="h-4 w-4" />
                 </Button>
@@ -181,6 +204,7 @@ const Editor = () => {
                   size="icon" 
                   onClick={redo} 
                   disabled={history.future.length === 0}
+                  className="hidden sm:flex"
                 >
                   <Redo className="h-4 w-4" />
                 </Button>
@@ -193,7 +217,7 @@ const Editor = () => {
           
           <DropdownMenu open={showHistoryDropdown} onOpenChange={setShowHistoryDropdown}>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="ml-2">
+              <Button variant="outline" size="sm" className="hidden sm:flex">
                 Historique
                 <span className="ml-1 text-xs bg-muted rounded-full px-1.5 py-0.5">
                   {history.past.length}
@@ -226,7 +250,7 @@ const Editor = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" asChild>
+                <Button variant="outline" size="icon" asChild className="hidden sm:flex">
                   <Link to={`/preview/${currentProject.id}`} target="_blank">
                     <Eye className="h-4 w-4" />
                   </Link>
@@ -241,7 +265,7 @@ const Editor = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" onClick={handleSave}>
+                <Button variant="outline" onClick={handleSave} className="hidden sm:flex">
                   <Save className="h-4 w-4 mr-2" />
                   Enregistrer
                 </Button>
@@ -253,16 +277,67 @@ const Editor = () => {
           </TooltipProvider>
           
           <ExportDialog />
+          
+          {/* Bouton pour afficher/masquer la sidebar droite sur mobile */}
+          {isMobile && (
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setShowRightSidebar(!showRightSidebar)}
+              className="sm:hidden"
+            >
+              {showRightSidebar ? <X className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
+            </Button>
+          )}
         </div>
       </div>
       
       <PageManager />
       
-      <div className="flex-1 flex overflow-hidden">
-        <ElementLibrary />
-        <EditorCanvas />
-        <ElementSettings />
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Sidebar gauche (Bibliothèque d'éléments) */}
+        <div 
+          className={`absolute sm:relative z-10 h-full transition-all duration-300 transform ${
+            showLeftSidebar ? "translate-x-0" : "-translate-x-full sm:translate-x-0 sm:w-0"
+          }`}
+        >
+          <ElementLibrary />
+        </div>
+        
+        {/* Canvas central */}
+        <div className="flex-1 overflow-hidden">
+          <EditorCanvas />
+        </div>
+        
+        {/* Sidebar droite (Paramètres d'éléments) */}
+        <div 
+          className={`absolute sm:relative right-0 z-10 h-full transition-all duration-300 transform ${
+            showRightSidebar ? "translate-x-0" : "translate-x-full sm:translate-x-0 sm:w-0"
+          }`}
+        >
+          <ElementSettings />
+        </div>
       </div>
+      
+      {/* Barre d'outils mobile en bas */}
+      {isMobile && (
+        <div className="sm:hidden flex items-center justify-between border-t p-2 bg-background">
+          <Button variant="outline" size="sm" onClick={undo} disabled={history.past.length === 0}>
+            <Undo className="h-4 w-4 mr-1" />
+            Annuler
+          </Button>
+          
+          <Button variant="outline" size="sm" onClick={redo} disabled={history.future.length === 0}>
+            <Redo className="h-4 w-4 mr-1" />
+            Rétablir
+          </Button>
+          
+          <Button variant="outline" size="sm" onClick={handleSave}>
+            <Save className="h-4 w-4 mr-1" />
+            Enregistrer
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

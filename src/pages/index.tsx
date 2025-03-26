@@ -12,10 +12,10 @@ const Index = () => {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="py-20 md:py-32 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center space-y-6 text-center">
+              <div className="space-y-4">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl max-w-3xl mx-auto">
                   Créez votre site web sans code
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
@@ -42,9 +42,10 @@ const Index = () => {
         
         {/* Features Section */}
         <section className="py-16 md:py-24">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
-              <div className="flex flex-col items-center space-y-4 text-center">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold text-center mb-12">Fonctionnalités principales</h2>
+            <div className="grid gap-8 md:gap-12 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="flex flex-col items-center space-y-4 text-center bg-card p-6 rounded-lg shadow-sm">
                 <div className="rounded-full p-3 bg-primary/10">
                   <Layout className="h-6 w-6 text-primary" />
                 </div>
@@ -55,7 +56,7 @@ const Index = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="flex flex-col items-center space-y-4 text-center bg-card p-6 rounded-lg shadow-sm">
                 <div className="rounded-full p-3 bg-primary/10">
                   <Palette className="h-6 w-6 text-primary" />
                 </div>
@@ -66,7 +67,7 @@ const Index = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="flex flex-col items-center space-y-4 text-center bg-card p-6 rounded-lg shadow-sm sm:col-span-2 lg:col-span-1">
                 <div className="rounded-full p-3 bg-primary/10">
                   <Database className="h-6 w-6 text-primary" />
                 </div>
@@ -83,9 +84,9 @@ const Index = () => {
         
         {/* CTA Section */}
         <section className="py-16 md:py-24 bg-primary/5">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center justify-center space-y-6 text-center">
+              <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
                   Prêt à créer votre site web ?
                 </h2>

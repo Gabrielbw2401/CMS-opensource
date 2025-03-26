@@ -6,6 +6,7 @@ import { Link } from "react-router";
 import { ArrowLeft, Edit3, Smartphone, Tablet, Monitor, Laptop, RotateCw } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
 
 type DeviceType = "mobile" | "tablet" | "laptop" | "desktop";
 type Orientation = "portrait" | "landscape";
@@ -162,7 +163,7 @@ const Preview = () => {
   
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex items-center justify-between border-b p-2 bg-background">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b p-2 bg-background gap-2">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" asChild>
             <Link to={`/editor/${currentProject.id}`}>
@@ -172,30 +173,30 @@ const Preview = () => {
           <h1 className="font-medium">Aperçu: {currentProject.nom}</h1>
           
           {currentPage && (
-            <span className="ml-2 text-sm text-muted-foreground">
+            <span className="ml-2 text-sm text-muted-foreground hidden sm:inline-block">
               Page: {currentPage.titre}
             </span>
           )}
         </div>
         
-        <div className="flex items-center gap-2">
-          <Tabs value={deviceType} onValueChange={(value) => setDeviceType(value as DeviceType)}>
-            <TabsList>
-              <TabsTrigger value="mobile">
+        <div className="flex flex-wrap items-center gap-2">
+          <Tabs value={deviceType} onValueChange={(value) => setDeviceType(value as DeviceType)} className="w-full sm:w-auto">
+            <TabsList className="w-full sm:w-auto">
+              <TabsTrigger value="mobile" className="flex-1 sm:flex-none">
                 <Smartphone className="h-4 w-4 mr-2" />
-                Mobile
+                <span className="hidden sm:inline">Mobile</span>
               </TabsTrigger>
-              <TabsTrigger value="tablet">
+              <TabsTrigger value="tablet" className="flex-1 sm:flex-none">
                 <Tablet className="h-4 w-4 mr-2" />
-                Tablette
+                <span className="hidden sm:inline">Tablette</span>
               </TabsTrigger>
-              <TabsTrigger value="laptop">
+              <TabsTrigger value="laptop" className="flex-1 sm:flex-none">
                 <Laptop className="h-4 w-4 mr-2" />
-                Portable
+                <span className="hidden sm:inline">Portable</span>
               </TabsTrigger>
-              <TabsTrigger value="desktop">
+              <TabsTrigger value="desktop" className="flex-1 sm:flex-none">
                 <Monitor className="h-4 w-4 mr-2" />
-                Bureau
+                <span className="hidden sm:inline">Bureau</span>
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -205,12 +206,13 @@ const Preview = () => {
             size="icon" 
             onClick={toggleOrientation}
             disabled={deviceType === "desktop" || deviceType === "laptop"}
+            title="Changer l'orientation"
           >
             <RotateCw className="h-4 w-4" />
           </Button>
           
           <Select value={selectedPreset} onValueChange={handlePresetChange}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] hidden sm:flex">
               <SelectValue placeholder="Appareil" />
             </SelectTrigger>
             <SelectContent>
@@ -229,11 +231,12 @@ const Preview = () => {
           <Button 
             variant={isNavigationMode ? "default" : "outline"}
             onClick={() => setIsNavigationMode(!isNavigationMode)}
+            size="sm"
           >
             Mode navigation
           </Button>
           
-          <Button asChild>
+          <Button asChild size="sm">
             <Link to={`/editor/${currentProject.id}`}>
               <Edit3 className="h-4 w-4 mr-2" />
               Retour à l'éditeur
@@ -243,8 +246,8 @@ const Preview = () => {
       </div>
       
       {currentPage && (
-        <div className="flex-1 flex flex-col items-center justify-start bg-muted/20 overflow-auto p-4">
-          <div className="mb-4 flex gap-2">
+        <div className="flex-1 flex flex-col items-center justify-start bg-muted/10 overflow-auto p-4">
+          <div className="mb-4 flex flex-wrap gap-2 max-w-full overflow-x-auto pb-2">
             {pages
               .filter(page => page.projetId === currentProject.id)
               .map(page => (
@@ -260,40 +263,44 @@ const Preview = () => {
             }
           </div>
           
-          <div
-            className="bg-white shadow-lg transition-all duration-300 overflow-hidden"
-            style={getPreviewStyle()}
-          >
-            <div className="relative w-full h-full overflow-auto">
-              {pageElements.map((element) => (
-                <div
-                  key={element.id}
-                  className="absolute"
-                  style={{
-                    left: `${element.position.x}px`,
-                    top: `${element.position.y}px`,
-                    width: `${element.position.width}px`,
-                    height: `${element.position.height}px`,
-                    ...element.style,
-                    cursor: isNavigationMode && element.type === 'bouton' ? 'pointer' : 'default',
-                  }}
-                  onClick={() => handleElementClick(element)}
-                >
-                  {renderPreviewElement(element, isNavigationMode)}
+          <Card className="mb-4 p-2 w-full max-w-[1400px]">
+            <CardContent className="p-0 flex justify-center">
+              <div
+                className="bg-white shadow-lg transition-all duration-300 overflow-hidden"
+                style={getPreviewStyle()}
+              >
+                <div className="relative w-full h-full overflow-auto">
+                  {pageElements.map((element) => (
+                    <div
+                      key={element.id}
+                      className="absolute"
+                      style={{
+                        left: `${element.position.x}px`,
+                        top: `${element.position.y}px`,
+                        width: `${element.position.width}px`,
+                        height: `${element.position.height}px`,
+                        ...element.style,
+                        cursor: isNavigationMode && element.type === 'bouton' ? 'pointer' : 'default',
+                      }}
+                      onClick={() => handleElementClick(element)}
+                    >
+                      {renderPreviewElement(element, isNavigationMode)}
+                    </div>
+                  ))}
+                  
+                  {pageElements.length === 0 && (
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-muted-foreground">
+                        Cette page est vide. Ajoutez des éléments dans l'éditeur.
+                      </p>
+                    </div>
+                  )}
                 </div>
-              ))}
-              
-              {pageElements.length === 0 && (
-                <div className="flex items-center justify-center h-full">
-                  <p className="text-muted-foreground">
-                    Cette page est vide. Ajoutez des éléments dans l'éditeur.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
           
-          <div className="mt-4 text-sm text-muted-foreground">
+          <div className="mt-2 text-sm text-muted-foreground text-center">
             {isNavigationMode ? (
               <p>Mode navigation activé. Cliquez sur les boutons pour naviguer entre les pages.</p>
             ) : (

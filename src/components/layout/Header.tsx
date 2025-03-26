@@ -15,21 +15,21 @@ export function Header() {
   const { user, isAuthenticated, logout } = useAuthStore();
 
   return (
-    <header className="border-b bg-background">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="border-b bg-background sticky top-0 z-50">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link to="/" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-bold">CV</span>
             </div>
-            <span className="font-bold text-xl">CMS Visuel</span>
+            <span className="font-bold text-xl hidden sm:inline-block">CMS Visuel</span>
           </Link>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {isAuthenticated ? (
             <>
-              <Button variant="outline" asChild>
+              <Button variant="outline" size="sm" className="hidden sm:flex" asChild>
                 <Link to="/dashboard">Tableau de bord</Link>
               </Button>
               <DropdownMenu>
@@ -63,10 +63,10 @@ export function Header() {
             </>
           ) : (
             <>
-              <Button variant="outline" asChild>
+              <Button variant="outline" size="sm" className="hidden sm:flex" asChild>
                 <Link to="/login">Connexion</Link>
               </Button>
-              <Button asChild>
+              <Button size="sm" asChild>
                 <Link to="/login">Commencer</Link>
               </Button>
             </>

@@ -95,89 +95,91 @@ const Dashboard = () => {
     <div className="flex flex-col min-h-screen">
       <Header />
       
-      <main className="flex-1 container py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">Mes projets</h1>
-          
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Nouveau projet
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Créer un nouveau projet</DialogTitle>
-                <DialogDescription>
-                  Donnez un nom et une description à votre nouveau projet.
-                </DialogDescription>
-              </DialogHeader>
-              
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="project-name">Nom du projet</Label>
-                  <Input
-                    id="project-name"
-                    value={newProjectName}
-                    onChange={(e) => setNewProjectName(e.target.value)}
-                    placeholder="Mon site web"
-                  />
+      <main className="flex-1 bg-muted/10 py-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <h1 className="text-3xl font-bold">Mes projets</h1>
+            
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Nouveau projet
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Créer un nouveau projet</DialogTitle>
+                  <DialogDescription>
+                    Donnez un nom et une description à votre nouveau projet.
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="project-name">Nom du projet</Label>
+                    <Input
+                      id="project-name"
+                      value={newProjectName}
+                      onChange={(e) => setNewProjectName(e.target.value)}
+                      placeholder="Mon site web"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="project-description">Description</Label>
+                    <Input
+                      id="project-description"
+                      value={newProjectDescription}
+                      onChange={(e) => setNewProjectDescription(e.target.value)}
+                      placeholder="Un site web pour présenter mon entreprise"
+                    />
+                  </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="project-description">Description</Label>
-                  <Input
-                    id="project-description"
-                    value={newProjectDescription}
-                    onChange={(e) => setNewProjectDescription(e.target.value)}
-                    placeholder="Un site web pour présenter mon entreprise"
-                  />
-                </div>
-              </div>
-              
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button variant="outline">Annuler</Button>
-                </DialogClose>
-                <Button onClick={handleCreateProject}>Créer</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Annuler</Button>
+                  </DialogClose>
+                  <Button onClick={handleCreateProject}>Créer</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+          
+          <div className="mb-6 max-w-md">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Rechercher un projet..."
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          {filteredProjects.length === 0 ? (
+            <div className="text-center py-12 bg-card rounded-lg shadow-sm">
+              <h2 className="text-xl font-medium mb-2">Aucun projet trouvé</h2>
+              <p className="text-muted-foreground mb-6">
+                {searchQuery ? "Aucun projet ne correspond à votre recherche." : "Commencez par créer votre premier projet."}
+              </p>
+              {!searchQuery && (
+                <Button onClick={() => setIsDialogOpen(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Créer un projet
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProjects.map((project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </div>
+          )}
         </div>
-        
-        <div className="mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Rechercher un projet..."
-              className="pl-10"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
-        
-        {filteredProjects.length === 0 ? (
-          <div className="text-center py-12">
-            <h2 className="text-xl font-medium mb-2">Aucun projet trouvé</h2>
-            <p className="text-muted-foreground mb-6">
-              {searchQuery ? "Aucun projet ne correspond à votre recherche." : "Commencez par créer votre premier projet."}
-            </p>
-            {!searchQuery && (
-              <Button onClick={() => setIsDialogOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Créer un projet
-              </Button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        )}
       </main>
       
       <Footer />
@@ -193,12 +195,12 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
   const navigate = useNavigate();
   
   return (
-    <Card>
+    <Card className="transition-all hover:shadow-md">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle>{project.nom}</CardTitle>
-            <CardDescription className="mt-1">{project.description}</CardDescription>
+            <CardTitle className="line-clamp-1">{project.nom}</CardTitle>
+            <CardDescription className="mt-1 line-clamp-2">{project.description}</CardDescription>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
