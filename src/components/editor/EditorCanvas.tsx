@@ -232,13 +232,13 @@ export function EditorCanvas() {
     const directions = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'];
     const cursors = ['ns-resize', 'nesw-resize', 'ew-resize', 'nwse-resize', 'ns-resize', 'nesw-resize', 'ew-resize', 'nwse-resize'];
     const ariaLabels = [
-      'Redimensionner vers le haut', 
-      'Redimensionner vers le haut et la droite', 
-      'Redimensionner vers la droite', 
+      'Redimensionner vers le haut',
+      'Redimensionner vers le haut et la droite',
+      'Redimensionner vers la droite',
       'Redimensionner vers le bas et la droite',
-      'Redimensionner vers le bas', 
-      'Redimensionner vers le bas et la gauche', 
-      'Redimensionner vers la gauche', 
+      'Redimensionner vers le bas',
+      'Redimensionner vers le bas et la gauche',
+      'Redimensionner vers la gauche',
       'Redimensionner vers le haut et la gauche'
     ];
     

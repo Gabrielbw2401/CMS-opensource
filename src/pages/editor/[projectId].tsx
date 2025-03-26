@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
-import { ArrowLeft, Eye, Undo, Redo, Save, Clock, Menu, X, Settings } from "lucide-react";
+import { ArrowLeft, Eye, Undo, Redo, Save, Clock, Menu, X, Settings, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Tooltip,
@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const Editor = () => {
   const { projectId } = useParams();
@@ -48,6 +49,7 @@ const Editor = () => {
   const [showHistoryDropdown, setShowHistoryDropdown] = useState(false);
   const [showLeftSidebar, setShowLeftSidebar] = useState(!isMobile);
   const [showRightSidebar, setShowRightSidebar] = useState(!isMobile);
+  const [showMobileHelp, setShowMobileHelp] = useState(isMobile);
   
   // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
   useEffect(() => {
@@ -111,6 +113,7 @@ const Editor = () => {
   useEffect(() => {
     setShowLeftSidebar(!isMobile);
     setShowRightSidebar(!isMobile);
+    setShowMobileHelp(isMobile);
   }, [isMobile]);
   
   const handleSave = () => {
@@ -172,6 +175,7 @@ const Editor = () => {
               size="icon"
               onClick={() => setShowLeftSidebar(!showLeftSidebar)}
               className="sm:hidden"
+              aria-label={showLeftSidebar ? "Masquer la bibliothèque d'éléments" : "Afficher la bibliothèque d'éléments"}
             >
               {showLeftSidebar ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </Button>
@@ -186,6 +190,7 @@ const Editor = () => {
                   onClick={undo} 
                   disabled={history.past.length === 0}
                   className="hidden sm:flex"
+                  aria-label="Annuler"
                 >
                   <Undo className="h-4 w-4" />
                 </Button>
@@ -205,6 +210,7 @@ const Editor = () => {
                   onClick={redo} 
                   disabled={history.future.length === 0}
                   className="hidden sm:flex"
+                  aria-label="Rétablir"
                 >
                   <Redo className="h-4 w-4" />
                 </Button>
@@ -285,6 +291,7 @@ const Editor = () => {
               size="icon"
               onClick={() => setShowRightSidebar(!showRightSidebar)}
               className="sm:hidden"
+              aria-label={showRightSidebar ? "Masquer les paramètres" : "Afficher les paramètres"}
             >
               {showRightSidebar ? <X className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
             </Button>
@@ -293,6 +300,24 @@ const Editor = () => {
       </div>
       
       <PageManager />
+      
+      {/* Message d'aide pour les utilisateurs mobiles */}
+      {showMobileHelp && (
+        <Alert className="m-2">
+          <Info className="h-4 w-4" />
+          <AlertTitle>Conseil pour l'édition mobile</AlertTitle>
+          <AlertDescription>
+            L'édition est optimisée pour les écrans plus larges. Utilisez les boutons en haut pour afficher/masquer les panneaux latéraux.
+            <Button 
+              variant="link" 
+              className="p-0 h-auto text-xs"
+              onClick={() => setShowMobileHelp(false)}
+            >
+              Ne plus afficher
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
       
       <div className="flex-1 flex overflow-hidden relative">
         {/* Sidebar gauche (Bibliothèque d'éléments) */}
